@@ -1,20 +1,80 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Reserva de Turnos</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-item>
+    <ion-icon
+      name="calendar-outline"
+      slot="start">
+    </ion-icon>
+
+    <ion-input
+      type="date"
+      label="Seleccione una fecha"
+      label-placement="floating"
+      [(ngModel)]="fechaSeleccionada"
+      (ionChange)="cambiarFecha()">
+    </ion-input>
+  </ion-item>
+
+  @if (fechaSeleccionada) {
+
+    <h2>Horarios disponibles</h2>
+
+    <ion-list>
+      @for (horario of horarios; track horario.hora) {
+
+        <ion-item
+          [class.disponible]="horario.estado === 'Disponible'"
+          [class.reservado]="horario.estado === 'Reservado'">
+
+          <ion-icon
+            slot="start"
+            [name]="horario.estado === 'Disponible'
+              ? 'time-outline'
+              : 'checkmark-circle-outline'">
+          </ion-icon>
+
+          <ion-label>
+            <h2>{{ horario.hora }}</h2>
+            <p>{{ horario.estado }}</p>
+          </ion-label>
+
+          @if (horario.estado === 'Disponible') {
+            <ion-button
+              slot="end"
+              (click)="reservarTurno(horario)">
+              Reservar
+            </ion-button>
+          }
+
+        </ion-item>
+      }
+    </ion-list>
+
+    <div class="contador">
+      <ion-icon name="calendar-number-outline"></ion-icon>
+      <strong>Turnos disponibles: {{ turnosDisponibles }}</strong>
+    </div>
+
+    @if (turnosDisponibles === 0) {
+      <div class="sin-turnos">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <p>No hay turnos disponibles para esta fecha.</p>
+      </div>
+    }
+
+  } @else {
+
+    <div class="seleccionar-fecha">
+      <ion-icon name="calendar-outline"></ion-icon>
+      <p>Seleccione una fecha para consultar los horarios.</p>
+    </div>
+
+  }
+
 </ion-content>
